@@ -7,7 +7,7 @@ import io.micronaut.data.annotation.MappedEntity;
 import io.micronaut.data.annotation.Relation;
 import rk.cinema.enums.TicketType;
 
-@MappedEntity
+@MappedEntity("reserved_seat")
 public record ReservedSeat(
         @Id
         @GeneratedValue
