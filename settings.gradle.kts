@@ -8,6 +8,9 @@ pluginManagement {
         mavenCentral()
     }
 
+    val flywayId: String by settings
+    val flywayVersion: String by settings
+
     val micronautPluginId: String by settings
     val micronautPluginVersion: String by settings
 
@@ -24,6 +27,7 @@ pluginManagement {
             }
 
             when (requested.id.id) {
+                flywayId -> useVersion(flywayVersion)
                 shadowId -> useVersion(shadowVersion)
                 testLoggerId -> useVersion(testLoggerVersion)
             }
