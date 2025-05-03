@@ -4,3 +4,7 @@ flyway:
   datasources:
     default:
       enabled: true
+
+csrs:
+  reservation:
+    timeout-minutes: 15

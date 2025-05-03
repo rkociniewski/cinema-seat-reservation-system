@@ -23,6 +23,10 @@ public record Reservation(
         LocalDateTime createdAt,
 
         @NonNull
-        ReservationState state
+        ReservationState state,
+
+        @Relation(Relation.Kind.MANY_TO_ONE)
+        @NonNull
+        Customer customer
 ) {
 }
