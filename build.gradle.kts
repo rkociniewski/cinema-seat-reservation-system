@@ -1,13 +1,15 @@
 group = "rk.cinema"
 version = "1.0-SNAPSHOT"
 
+val mockitoAgent = configurations.create("mockitoAgent")
+
 val javaVersion = JavaVersion.VERSION_21
 graalvmNative.toolchainDetection = false
 
 val flywayVersion: String by project
 val testContainerVersion: String by project
 val junitVersion: String by project
-val lombokVersion: String by project
+val mockitoVersion: String by project
 
 plugins {
     id("com.adarshr.test-logger")
@@ -20,6 +22,7 @@ plugins {
 }
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
@@ -27,7 +30,6 @@ dependencies {
     annotationProcessor("io.micronaut:micronaut-http-validation")
     annotationProcessor("io.micronaut.serde:micronaut-serde-processor")
     annotationProcessor("io.micronaut.openapi:micronaut-openapi")
-    annotationProcessor("org.projectlombok:lombok:$lombokVersion")
 
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.data:micronaut-data-jdbc")
@@ -39,18 +41,19 @@ dependencies {
 
     compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
     compileOnly("io.micronaut:micronaut-http-client")
-    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+
+    mockitoAgent("org.mockito:mockito-core:$mockitoVersion") { isTransitive = false }
 
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly("org.flywaydb:flyway-database-postgresql:$flywayVersion")
     runtimeOnly("org.postgresql:postgresql")
-
-    testAnnotationProcessor("org.projectlombok:lombok:$lombokVersion")
+    runtimeOnly("org.yaml:snakeyaml")
 
     testImplementation("io.micronaut:micronaut-http-client")
     testImplementation(platform("org.junit:junit-bom:$junitVersion"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.mockito:mockito-core") { isTransitive = false }
     testImplementation("org.testcontainers:postgresql:$testContainerVersion")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -69,6 +72,7 @@ java {
 
 tasks.test {
     useJUnitPlatform()
+    jvmArgs("-javaagent:${mockitoAgent.asPath}")
 }
 
 tasks.javadoc {

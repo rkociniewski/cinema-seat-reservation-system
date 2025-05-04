@@ -1,6 +1,7 @@
 package rk.cinema.service;
 
 import jakarta.inject.Singleton;
+import rk.cinema.configuration.ReservationConfig;
 import rk.cinema.enums.ReservationState;
 import rk.cinema.enums.TicketType;
 import rk.cinema.model.*;
@@ -15,7 +16,6 @@ import java.util.stream.Collectors;
 
 @Singleton
 public class ReservationService {
-
     private final Duration reservationTimeout;
     private final ReservationRepository reservationRepository;
     private final ReservedSeatRepository reservedSeatRepository;
@@ -24,18 +24,19 @@ public class ReservationService {
     private final CustomerRepository customerRepository;
 
     public ReservationService(
-            Duration reservationTimeout, ReservationRepository reservationRepository,
+            ReservationRepository reservationRepository,
             ReservedSeatRepository reservedSeatRepository,
             SeatRepository seatRepository,
             ScreeningRepository screeningRepository,
-            CustomerRepository customerRepository
+            CustomerRepository customerRepository,
+            ReservationConfig reservationConfig
     ) {
-        this.reservationTimeout = reservationTimeout;
         this.reservationRepository = reservationRepository;
         this.reservedSeatRepository = reservedSeatRepository;
         this.seatRepository = seatRepository;
         this.screeningRepository = screeningRepository;
         this.customerRepository = customerRepository;
+        this.reservationTimeout = Duration.ofMinutes(reservationConfig.getTimeoutMinutes());
     }
 
     public Reservation createReservation(Long customerId, Long screeningId, Map<Long, TicketType> seatIdToTicketType) {
