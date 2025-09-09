@@ -16,7 +16,6 @@ plugins {
     id("org.flywaydb.flyway")
     id("java")
     id("io.micronaut.application")
-    id("com.gradleup.shadow")
     id("io.micronaut.aot")
     application
 }
