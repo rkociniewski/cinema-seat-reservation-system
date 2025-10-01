@@ -3,51 +3,21 @@ dokka = "2.1.0-Beta"
 detekt = "1.23.8"
 test-logger = "4.0.0"
 junit = "6.0.0"
-jackson = "2.20.0"
-logback = "1.5.18"
 flyway = "11.13.2"
 kotlin = "2.2.20"
 shadow = "8.3.7"
 ksp = "2.2.20-2.0.3"
-micronautPlatform = "4.9.3"
 micronautPlugin = "4.5.5"
-micronautSerde = "2.15.1"
-micronautOpenApi = "6.18.1"
-micronautData = "4.13.5"
-micronautFlyway = "7.8.0"
-micronautSql = "6.2.2"
-micronautClient = "4.9.11"
-micronautTest = "4.8.1"
 postgres = "42.7.8"
-snakeYaml = "2.5"
-mockito = "5.20.0"
 testcontainers = "1.21.3"
 
 [libraries]
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 junit-jupiter = { module = "org.junit:junit-bom", version.ref = "junit" }
-logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
-jackson = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson" }
 flyway = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
-micronaut-validator = { module = "io.micronaut:micronaut-http-validation", version.ref = "micronautClient" }
-micronaut-serde = { module = "io.micronaut.serde:micronaut-serde-processor", version.ref = "micronautSerde" }
-micronaut-jackson = { module = "io.micronaut.serde:micronaut-serde-jackson", version.ref = "micronautSerde" }
-micronaut-openapi = { module = "io.micronaut.openapi:micronaut-openapi", version.ref = "micronautOpenApi" }
-micronaut-annotations = { module = "io.micronaut.openapi:micronaut-openapi-annotations", version.ref = "micronautOpenApi" }
-micronaut-data = { module = "io.micronaut.data:micronaut-data-jdbc", version.ref = "micronautData" }
-micronaut-tx = { module = "io.micronaut.data:micronaut-data-tx-hibernate", version.ref = "micronautData" }
-micronaut-flyway = { module = "io.micronaut.flyway:micronaut-flyway", version.ref = "micronautFlyway" }
-micronaut-hikari = { module = "io.micronaut.sql:micronaut-jdbc-hikari", version.ref = "micronautSql" }
-micronaut-jpa = { module = "io.micronaut.sql:micronaut-hibernate-jpa", version.ref = "micronautSql" }
-micronaut-client = { module = "io.micronaut:micronaut-http-client", version.ref = "micronautClient" }
-micronaut-platform = { module = "io.micronaut.platform:micronaut-platform", version.ref = "micronautPlatform" }
-micronaut-test = { module = "io.micronaut.test:micronaut-test-junit5", version.ref = "micronautTest" }
-micronaut-netty = { module = "io.micronaut:micronaut-http-server-netty", version.ref = "micronautClient" }
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
-snakeyaml = { module = "org.yaml:snakeyaml", version.ref = "snakeYaml" }
-mockito = { module = "org.mockito:mockito-core", version.ref = "mockito" }
 testcontainers = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
 
 [libraries.test-junit5]
