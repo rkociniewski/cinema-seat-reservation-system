@@ -1,5 +1,5 @@
 [versions]
-dokka = "2.1.0-Beta"
+dokka = "2.1.0"
 detekt = "1.23.8"
 test-logger = "4.0.0"
 junit = "6.0.0"

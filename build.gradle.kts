@@ -1,34 +1,47 @@
+@file:Suppress("UnstableApiUsage")
+
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
-group = "rk.cinema"
-version = "1.0-SNAPSHOT"
+/**
+ * artifact group
+ */
+group = "rk.powermilk"
 
-val mockitoAgent = configurations.create("mockitoAgent")
+/**
+ * project version
+ */
+version = "1.0.0-SNAPSHOT"
 
-val javaVersion = JavaVersion.VERSION_21
-graalvmNative.toolchainDetection = false
+val javaVersion: JavaVersion = JavaVersion.VERSION_21
+val jvmTargetVersion = JvmTarget.JVM_21.target
 
 plugins {
-    alias(libs.plugins.test.logger)
     alias(libs.plugins.flyway)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.shadow)
     alias(libs.plugins.micronaut.application)
     alias(libs.plugins.micronaut.aot)
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.test.logger)
     alias(libs.plugins.dokka)
     alias(libs.plugins.detekt)
+    jacoco
     application
 }
 
 repositories {
-    mavenLocal()
     mavenCentral()
 }
 
+java {
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+}
+
+// dependencies
 dependencies {
     ksp("io.micronaut:micronaut-http-validation")
     ksp("io.micronaut.serde:micronaut-serde-processor")
@@ -48,8 +61,6 @@ dependencies {
     compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
     compileOnly("io.micronaut:micronaut-http-client")
 
-    mockitoAgent(libs.mockito) { isTransitive = false }
-
     runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly(libs.flyway.postgres)
@@ -60,9 +71,9 @@ dependencies {
     testImplementation(libs.junit.params)
     testImplementation(kotlin("test"))
     testImplementation("io.micronaut:micronaut-http-client")
+    testImplementation("io.micronaut.test:micronaut-test-junit5")
     testImplementation(platform(libs.junit.jupiter))
     testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation(libs.mockito) { isTransitive = false }
     testImplementation(libs.testcontainers)
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
@@ -73,29 +84,30 @@ application {
     mainClass = "rk.cinema.Application"
 }
 
-java {
-    sourceCompatibility = javaVersion
-    targetCompatibility = javaVersion
+testlogger {
+    showStackTraces = false
+    showFullStackTraces = false
+    showCauses = false
+    slowThreshold = 10000
+    showSimpleNames = true
+}
+
+kotlin {
+    compilerOptions {
+        verbose = true // enable verbose logging output
+        jvmTarget.set(JvmTarget.fromTarget(jvmTargetVersion)) // target version of the generated JVM bytecode
+    }
 }
 
 detekt {
+    source.setFrom("src/main/kotlin")
     config.setFrom("$projectDir/detekt.yml")
     autoCorrect = true
 }
 
-tasks.withType<Detekt>().configureEach {
-    jvmTarget = JvmTarget.JVM_21.target
-}
-
-tasks.withType<DetektCreateBaselineTask>().configureEach {
-    jvmTarget = JvmTarget.JVM_21.target
-}
-
 dokka {
     dokkaSourceSets.main {
-        jdkVersion.set(
-            java.targetCompatibility.toString().toInt()
-        ) // Used for linking to JDK documentation
+        jdkVersion.set(java.targetCompatibility.toString().toInt()) // Used for linking to JDK documentation
         skipDeprecated.set(false)
     }
 
@@ -117,42 +129,59 @@ dokka {
 }
 
 tasks.test {
+    jvmArgs("-XX:+EnableDynamicAgentLoading")
     useJUnitPlatform()
-    jvmArgs("-javaagent:${mockitoAgent.asPath}")
+    finalizedBy(tasks.jacocoTestReport)
 }
 
-tasks.javadoc {
-    isFailOnError = false
-    options.encoding = "UTF-8"
-    source = sourceSets["main"].allJava
-    (options as StandardJavadocDocletOptions).apply {
-        addBooleanOption("Xdoclint:none", true)
-        addStringOption("charset", "UTF-8")
-        addStringOption("docencoding", "UTF-8")
+
+tasks.jacocoTestReport {
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+        csv.required.set(false)
+    }
+
+    finalizedBy(tasks.jacocoTestCoverageVerification)
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.75".toBigDecimal()
+            }
+        }
+
+        rule {
+            enabled = true
+            element = "CLASS"
+            includes = listOf("rk.*")
+
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = "0.75".toBigDecimal()
+            }
+        }
     }
 }
 
-testlogger {
-    showStackTraces = false
-    slowThreshold = 10000
-    showSimpleNames = true
+tasks.register("cleanReports") {
+    doLast {
+        delete("${layout.buildDirectory}/reports")
+    }
 }
 
-micronaut {
-    runtime("netty")
-    testRuntime("junit5")
-    processing {
-        incremental(true)
-        annotations("rk.cinema.*")
-    }
-    aot {
-        optimizeServiceLoading = false
-        convertYamlToJava = false
-        precomputeOperations = true
-        cacheEnvironment = true
-        optimizeClassLoading = true
-        deduceEnvironment = true
-        optimizeNetty = true
-        replaceLogbackXml = true
-    }
+tasks.register("coverage") {
+    dependsOn(tasks.test, tasks.jacocoTestReport, tasks.jacocoTestCoverageVerification)
+}
+
+tasks.withType<Detekt>().configureEach {
+    jvmTarget = jvmTargetVersion
+}
+
+tasks.withType<DetektCreateBaselineTask>().configureEach {
+    jvmTarget = jvmTargetVersion
 }
