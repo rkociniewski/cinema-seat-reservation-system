@@ -13,7 +13,7 @@ group = "rk.powermilk"
 /**
  * project version
  */
-version = "1.2.3"
+version = "1.2.4"
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_21
 val jvmTargetVersion = JvmTarget.JVM_21.target
@@ -43,6 +43,7 @@ java {
 
 // dependencies
 dependencies {
+    ksp("io.micronaut.validation:micronaut-validation-processor")
     ksp("io.micronaut:micronaut-http-validation")
     ksp("io.micronaut.serde:micronaut-serde-processor")
     ksp("io.micronaut.openapi:micronaut-openapi")
@@ -55,7 +56,9 @@ dependencies {
     implementation("io.micronaut.flyway:micronaut-flyway")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     implementation("io.micronaut.data:micronaut-data-tx-hibernate")
+    implementation("io.micronaut:micronaut-http-server")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
+    implementation("io.micronaut.validation:micronaut-validation")
     implementation(libs.kotlinx)
     implementation(libs.flyway)
 
