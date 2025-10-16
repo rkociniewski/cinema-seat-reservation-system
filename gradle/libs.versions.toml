@@ -32,5 +32,5 @@ flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
-shadow = { id = "com.gradleup.shadow", version.ref = "shadow"}
+shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }

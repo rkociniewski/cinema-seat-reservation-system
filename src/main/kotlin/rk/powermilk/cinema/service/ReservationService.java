@@ -4,8 +4,6 @@ import jakarta.inject.Singleton;
 import rk.powermilk.cinema.configuration.ReservationConfig;
 import rk.powermilk.cinema.enums.ReservationState;
 import rk.powermilk.cinema.enums.TicketType;
-import rk.cinema.model.*;
-import rk.cinema.repository.*;
 import rk.powermilk.cinema.model.*;
 import rk.powermilk.cinema.repository.*;
 
@@ -26,12 +24,12 @@ public class ReservationService {
     private final CustomerRepository customerRepository;
 
     public ReservationService(
-            ReservationRepository reservationRepository,
-            ReservedSeatRepository reservedSeatRepository,
-            SeatRepository seatRepository,
-            ScreeningRepository screeningRepository,
-            CustomerRepository customerRepository,
-            ReservationConfig reservationConfig
+        ReservationRepository reservationRepository,
+        ReservedSeatRepository reservedSeatRepository,
+        SeatRepository seatRepository,
+        ScreeningRepository screeningRepository,
+        CustomerRepository customerRepository,
+        ReservationConfig reservationConfig
     ) {
         this.reservationRepository = reservationRepository;
         this.reservedSeatRepository = reservedSeatRepository;
@@ -53,11 +51,11 @@ public class ReservationService {
         }
 
         Reservation reservation = new Reservation(
-                null,
-                screening,
-                LocalDateTime.now(),
-                ReservationState.RESERVED,
-                customer
+            null,
+            screening,
+            LocalDateTime.now(),
+            ReservationState.RESERVED,
+            customer
         );
         reservation = reservationRepository.save(reservation);
 
@@ -75,11 +73,11 @@ public class ReservationService {
             throw new IllegalStateException("Cannot cancel a paid reservation.");
         }
         Reservation updated = new Reservation(
-                reservation.id,
-                reservation.screening,
-                reservation.createdAt,
-                ReservationState.CANCELED,
-                reservation.customer
+            reservation.id,
+            reservation.screening,
+            reservation.createdAt,
+            ReservationState.CANCELED,
+            reservation.customer
         );
         reservationRepository.update(updated);
     }
@@ -92,11 +90,11 @@ public class ReservationService {
         }
 
         Reservation updated = new Reservation(
-                reservation.id,
-                reservation.screening,
-                reservation.createdAt,
-                ReservationState.PAID,
-                reservation.customer
+            reservation.id,
+            reservation.screening,
+            reservation.createdAt,
+            ReservationState.PAID,
+            reservation.customer
         );
         reservationRepository.update(updated);
     }
@@ -114,11 +112,11 @@ public class ReservationService {
         List<Reservation> expired = reservationRepository.findExpiredReservations(expirationTime);
 
         expired.stream().map(reservation -> new Reservation(
-                reservation.id,
-                reservation.screening,
-                reservation.createdAt,
-                ReservationState.CANCELED,
-                reservation.customer
+            reservation.id,
+            reservation.screening,
+            reservation.createdAt,
+            ReservationState.CANCELED,
+            reservation.customer
         )).forEach(reservationRepository::update);
     }
 }

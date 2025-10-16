@@ -22,9 +22,11 @@ chmod +x setup-git-hooks.sh
 ## 📋 Installed Hooks
 
 ### 1. `commit-msg` - Commit Message Validation
+
 Validates that commit messages follow [Conventional Commits](https://www.conventionalcommits.org/).
 
 **Format:**
+
 ```
 <type>[optional scope]: <description>
 
@@ -34,6 +36,7 @@ Validates that commit messages follow [Conventional Commits](https://www.convent
 ```
 
 **Examples:**
+
 ```bash
 ✅ feat: Add user authentication
 ✅ fix(ui): Correct button alignment
@@ -44,6 +47,7 @@ Validates that commit messages follow [Conventional Commits](https://www.convent
 ```
 
 **Allowed types:**
+
 - `feat` - New feature
 - `fix` - Bug fix
 - `docs` - Documentation changes
@@ -59,6 +63,7 @@ Validates that commit messages follow [Conventional Commits](https://www.convent
 ### 2. `pre-commit` - Pre-commit Checks
 
 **Checks for:**
+
 - 🐛 Debug statements (`println`, `Log.d`, `TODO`, `FIXME`)
     - **Excluded**: Logger classes (AppLogger, Logger, Log.kt), test files
 - 📦 Large files (>5MB)
@@ -69,6 +74,7 @@ Validates that commit messages follow [Conventional Commits](https://www.convent
 - 🔍 Code issues (detekt, if configured)
 
 **Example output:**
+
 ```
 🔍 Running pre-commit checks...
 📝 Checking for debug statements...
@@ -113,6 +119,7 @@ Local version:  1.2.4 (43)
 ```
 
 **Error if version wasn't incremented:**
+
 ```
 ❌ ERROR: versionCode was not incremented!
    Remote: 42
@@ -149,17 +156,20 @@ fi
 ## 🚫 Bypassing Hooks
 
 ### Bypass all hooks (use with caution!)
+
 ```bash
 git commit --no-verify -m "Emergency fix"
 git push --no-verify
 ```
 
 ### Bypass only pre-commit
+
 ```bash
 SKIP_PRE_COMMIT=1 git commit -m "feat: Add feature"
 ```
 
 Modify `.githooks/pre-commit`:
+
 ```bash
 if [ -n "$SKIP_PRE_COMMIT" ]; then
     echo "⏭️  Skipping pre-commit checks"
@@ -170,6 +180,7 @@ fi
 ## 🔧 Troubleshooting
 
 ### Hook not working
+
 ```bash
 # Check if hook is executable
 ls -la .git/hooks/
@@ -180,19 +191,23 @@ chmod +x .git/hooks/*
 ```
 
 ### Hook fails on Windows
+
 On Windows, use Git Bash or:
+
 ```bash
 # Copy instead of symlinking
 cp .githooks/* .git/hooks/
 ```
 
 ### Want to see what the hook does
+
 ```bash
 # Debug mode
 bash -x .git/hooks/pre-commit
 ```
 
 ### Hook blocks important commit
+
 ```bash
 # Emergency bypass (document why!)
 git commit --no-verify -m "hotfix: Critical production fix"
@@ -210,6 +225,7 @@ git pull
 ## 🎓 Best Practices
 
 ### DO ✅
+
 - Commit often with small changes
 - Use clear, descriptive commit messages
 - Bump version before merging to main
@@ -217,6 +233,7 @@ git pull
 - Review what you're committing (`git diff --cached`)
 
 ### DON'T ❌
+
 - Don't commit secrets/API keys
 - Don't commit large binary files
 - Don't use `--no-verify` without reason
@@ -226,6 +243,7 @@ git pull
 ## 🤝 Team Collaboration
 
 ### New Team Member
+
 ```bash
 git clone <repo>
 cd <project>
@@ -233,6 +251,7 @@ cd <project>
 ```
 
 ### Updating Hooks in Project
+
 ```bash
 # 1. Modify .githooks/*
 # 2. Commit
@@ -253,6 +272,7 @@ git pull
 ## 🆘 Help
 
 Problems? Questions?
+
 1. Check this document
 2. Run: `bash -x .git/hooks/<hook-name>`
 3. Ask on Slack/Teams

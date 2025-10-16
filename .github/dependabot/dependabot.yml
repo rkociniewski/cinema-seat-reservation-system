@@ -36,7 +36,7 @@ updates:
           - "*test*"
           -
 
-  # GitHub Actions workflows
+          # GitHub Actions workflows
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
