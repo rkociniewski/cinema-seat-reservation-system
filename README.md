@@ -1,6 +1,6 @@
 # Cinema Seat Reservation System
 
-[![version](https://img.shields.io/badge/version-1.3.2-yellow.svg)](https://semver.org)
+[![version](https://img.shields.io/badge/version-1.3.3-yellow.svg)](https://semver.org)
 [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 [![Build](https://github.com/rkociniewski/csrs/actions/workflows/main.yml/badge.svg)](https://github.com/rkociniewski/fibonacci/actions/workflows/main.yml)
 [![CodeQL](https://github.com/rkociniewski/gac/actions/workflows/codeql.yml/badge.svg)](https://github.com/rkociniewski/crs/actions/workflows/codeql.yml)
