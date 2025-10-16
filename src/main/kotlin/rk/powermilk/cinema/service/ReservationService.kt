@@ -7,6 +7,7 @@ import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.withContext
 import rk.powermilk.cinema.configuration.ReservationConfig
+import rk.powermilk.cinema.dto.ReservationDetailsDTO
 import rk.powermilk.cinema.enums.ReservationState
 import rk.powermilk.cinema.enums.TicketType
 import rk.powermilk.cinema.model.Reservation
@@ -44,18 +45,25 @@ class ReservationService(
 
         // Check if seats are available - parallel validation
         coroutineScope {
-            seatIdToTicketType.keys.map {
+            seatIdToTicketType.keys.map { seatId ->
                 async {
-                    if (reservedSeatRepository.isSeatTaken(it, screeningId)) {
-                        throw IllegalArgumentException("Seat $it is already reserved for this screening.")
+                    if (reservedSeatRepository.isSeatTaken(seatId, screeningId)) {
+                        throw IllegalArgumentException("Seat $seatId is already reserved for this screening.")
                     }
                 }
             }.awaitAll()
         }
 
         // Create reservation
-        var reservation = Reservation(0L, screening, LocalDateTime.now(), ReservationState.RESERVED, customer)
-        reservation = reservationRepository.save(reservation)
+        val reservation = reservationRepository.save(
+            Reservation(
+                0L,
+                screening,
+                LocalDateTime.now(),
+                ReservationState.RESERVED,
+                customer
+            )
+        )
 
         // Save reserved seats
         coroutineScope {
@@ -65,12 +73,7 @@ class ReservationService(
                         .orElseThrow { NoSuchElementException("Seat not found: $seatId") }
 
                     reservedSeatRepository.save(
-                        ReservedSeat(
-                            id = 0L, // will be generated
-                            seat = seat,
-                            reservation = reservation,
-                            ticketType = ticketType
-                        )
+                        ReservedSeat(0L, seat, reservation, ticketType)
                     )
                 }
             }.awaitAll()
@@ -137,4 +140,32 @@ class ReservationService(
     suspend fun getReservationsByCustomer(customerId: Long): List<Reservation> = withContext(Dispatchers.IO) {
         reservationRepository.findByCustomerId(customerId)
     }
+
+    suspend fun getReservationsByCustomerId(customerId: Long): List<rk.powermilk.cinema.dto.ReservationDetailsDTO> =
+        withContext(Dispatchers.IO) {
+            val reservations = reservationRepository.findByCustomerId(customerId)
+
+            reservations.map { reservation ->
+                val reservedSeats = reservedSeatRepository.findByReservationId(reservation.id)
+                ReservationDetailsDTO.from(
+                    reservation,
+                    reservedSeats,
+                    (reservationTimeout.toMinutes()).toInt()
+                )
+            }
+        }
+
+    suspend fun getReservationDetails(reservationId: Long): rk.powermilk.cinema.dto.ReservationDetailsDTO =
+        withContext(Dispatchers.IO) {
+            val reservation = reservationRepository.findById(reservationId)
+                .orElseThrow { NoSuchElementException("Reservation not found: $reservationId") }
+
+            val reservedSeats = reservedSeatRepository.findByReservationId(reservationId)
+
+            ReservationDetailsDTO.from(
+                reservation,
+                reservedSeats,
+                (reservationTimeout.toMinutes()).toInt()
+            )
+        }
 }
