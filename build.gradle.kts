@@ -13,7 +13,7 @@ group = "rk.powermilk"
 /**
  * project version
  */
-version = "1.2.6"
+version = "1.3.0"
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_21
 val jvmTargetVersion = JvmTarget.JVM_21.target
@@ -55,6 +55,7 @@ dependencies {
     implementation("io.micronaut.data:micronaut-data-jdbc")
     implementation("io.micronaut.flyway:micronaut-flyway")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
+    implementation("io.micronaut.data:micronaut-data-tx")
     implementation("io.micronaut.data:micronaut-data-tx-hibernate")
     implementation("io.micronaut:micronaut-http-server")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
