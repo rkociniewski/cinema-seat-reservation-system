@@ -1,3 +1,33 @@
+openapi:
+  title: Cinema Seat Reservation System API
+  version: 1.3.2
+  description: |
+    REST API for cinema ticket booking with Kotlin Coroutines and Micronaut Framework.
+
+    ## Features
+    - Multi-ticket reservation with different ticket types
+    - Time-based seat holds (configurable timeout)
+    - Automatic expiration of unpaid reservations
+    - Real-time seat availability
+
+    ## Authentication
+    Currently no authentication required (development mode)
+
+    ## Rate Limiting
+    No rate limiting applied
+  contact:
+    name: Rafał Kociniewski
+    email: contact@example.com
+    url: https://github.com/rkociniewski/csrs
+  license:
+    name: MIT License
+    url: https://opensource.org/licenses/MIT
+  servers:
+    - url: http://localhost:8080
+      description: Development server
+    - url: https://api.cinema.example.com
+      description: Production server
+
 micronaut:
   application:
     name: csrs
@@ -25,6 +55,14 @@ micronaut:
         enabled: true  # File descriptor metrics
       hikaricp:
         enabled: true  # Database connection pool metrics
+  router:
+    static-resources:
+      swagger:
+        paths: classpath:META-INF/swagger
+        mapping: /swagger/**
+      swagger-ui:
+        paths: classpath:META-INF/swagger/views/swagger-ui
+        mapping: /swagger-ui/**
 
 endpoints:
   prometheus:

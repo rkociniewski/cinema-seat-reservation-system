@@ -7,19 +7,23 @@ import io.micronaut.http.annotation.Delete
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.PathVariable
 import io.micronaut.http.annotation.Post
+import io.swagger.v3.oas.annotations.Operation
+import io.swagger.v3.oas.annotations.Parameter
+import io.swagger.v3.oas.annotations.media.Content
+import io.swagger.v3.oas.annotations.media.Schema
+import io.swagger.v3.oas.annotations.responses.ApiResponse
+import io.swagger.v3.oas.annotations.responses.ApiResponses
+import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Positive
 import rk.powermilk.cinema.dto.CreateReservationDTO
 import rk.powermilk.cinema.dto.PaymentConfirmationDTO
 import rk.powermilk.cinema.dto.ReservationDetailsDTO
+import rk.powermilk.cinema.model.error.ErrorResponse
+import rk.powermilk.cinema.model.error.ValidationErrorResponse
 import rk.powermilk.cinema.service.ReservationService
 
-/**
- * REST controller for managing cinema seat reservations.
- *
- * Handles the complete reservation lifecycle: creation, payment confirmation,
- * and cancellation. All request bodies are validated using Jakarta Bean Validation.
- */
+@Tag(name = "Reservations", description = "Operations for managing cinema seat reservations")
 @Controller("/api/reservations")
 class ReservationController(private val reservationService: ReservationService) {
 
@@ -34,8 +38,49 @@ class ReservationController(private val reservationService: ReservationService) 
      * @throws IllegalArgumentException if any seat is already taken
      * @throws NoSuchElementException if customer or screening not found
      */
+    @Operation(
+        summary = "Create new reservation",
+        description = """
+            Creates a new reservation for selected seats. Seats are temporarily held for the configured
+            timeout period (default 15 minutes). All selected seats must be available.
+
+            **Ticket Types:**
+            - STANDARD: Regular price ticket
+            - CHILD_DISCOUNT: Discounted ticket for children
+            - SENIOR_DISCOUNT: Discounted ticket for seniors
+        """
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "201",
+            description = "Reservation created successfully",
+            content = [Content(schema = Schema(implementation = ReservationDetailsDTO::class))]
+        ),
+        ApiResponse(
+            responseCode = "400",
+            description = "Invalid request data",
+            content = [Content(schema = Schema(implementation = ValidationErrorResponse::class))]
+        ),
+        ApiResponse(
+            responseCode = "404",
+            description = "Customer or screening not found",
+            content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+        ),
+        ApiResponse(
+            responseCode = "409",
+            description = "One or more seats already taken",
+            content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+        )
+    )
     @Post
-    suspend fun createReservation(@Valid @Body request: CreateReservationDTO): HttpResponse<ReservationDetailsDTO> {
+    suspend fun createReservation(
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Reservation details with customer, screening and seat selections",
+            required = true,
+            content = [Content(schema = Schema(implementation = CreateReservationDTO::class))]
+        )
+        @Valid @Body request: CreateReservationDTO
+    ): HttpResponse<ReservationDetailsDTO> {
         val reservation = reservationService.createReservation(
             customerId = request.customerId,
             screeningId = request.screeningId,
@@ -52,9 +97,28 @@ class ReservationController(private val reservationService: ReservationService) 
      * @return reservation details including all reserved seats
      * @throws NoSuchElementException if reservation not found
      */
+    @Operation(
+        summary = "Get reservation details",
+        description = "Retrieves complete information about a specific reservation including all reserved seats"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "Reservation details",
+            content = [Content(schema = Schema(implementation = ReservationDetailsDTO::class))]
+        ),
+        ApiResponse(
+            responseCode = "404",
+            description = "Reservation not found",
+            content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+        )
+    )
     @Get("/{id}")
-    suspend fun getReservation(@Positive(message = "Reservation ID must be positive") @PathVariable id: Long) =
-        reservationService.getReservationDetails(id)
+    suspend fun getReservation(
+        @Parameter(description = "Reservation ID", required = true, example = "1")
+        @Positive(message = "Reservation ID must be positive")
+        @PathVariable id: Long
+    ) = reservationService.getReservationDetails(id)
 
     /**
      * Confirms payment for a reservation within the timeout window.
@@ -68,9 +132,39 @@ class ReservationController(private val reservationService: ReservationService) 
      * @throws IllegalStateException if reservation expired or already paid
      * @throws NoSuchElementException if reservation not found
      */
+    @Operation(
+        summary = "Confirm payment",
+        description = """
+            Confirms payment for a reservation. Must be called within the timeout window
+            (default 15 minutes from creation). Changes reservation state from RESERVED to PAID.
+        """
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "Payment confirmed successfully",
+            content = [Content(schema = Schema(implementation = ReservationDetailsDTO::class))]
+        ),
+        ApiResponse(
+            responseCode = "404",
+            description = "Reservation not found",
+            content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+        ),
+        ApiResponse(
+            responseCode = "409",
+            description = "Reservation expired or already paid",
+            content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+        )
+    )
     @Post("/{id}/payment")
     suspend fun confirmPayment(
-        @Positive(message = "Reservation ID must be positive") @PathVariable id: Long,
+        @Parameter(description = "Reservation ID", required = true, example = "1")
+        @Positive(message = "Reservation ID must be positive")
+        @PathVariable id: Long,
+        @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            description = "Payment details (optional)",
+            required = false
+        )
         @Valid @Body payment: PaymentConfirmationDTO
     ): HttpResponse<ReservationDetailsDTO> {
         reservationService.confirmPayment(id)
@@ -89,9 +183,34 @@ class ReservationController(private val reservationService: ReservationService) 
      * @throws IllegalStateException if trying to cancel paid reservation
      * @throws NoSuchElementException if reservation not found
      */
+    @Operation(
+        summary = "Cancel reservation",
+        description = """
+            Cancels a reservation and releases the seats. Only RESERVED reservations can be cancelled.
+            Paid reservations cannot be cancelled (would require separate refund logic).
+        """
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "204",
+            description = "Reservation cancelled successfully"
+        ),
+        ApiResponse(
+            responseCode = "404",
+            description = "Reservation not found",
+            content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+        ),
+        ApiResponse(
+            responseCode = "409",
+            description = "Cannot cancel paid reservation",
+            content = [Content(schema = Schema(implementation = ErrorResponse::class))]
+        )
+    )
     @Delete("/{id}")
     suspend fun cancelReservation(
-        @Positive(message = "Reservation ID must be positive") @PathVariable id: Long
+        @Parameter(description = "Reservation ID", required = true, example = "1")
+        @Positive(message = "Reservation ID must be positive")
+        @PathVariable id: Long
     ): HttpResponse<Void> {
         reservationService.cancelReservation(id)
         return HttpResponse.noContent()
@@ -106,8 +225,21 @@ class ReservationController(private val reservationService: ReservationService) 
      * @param customerId the customer ID (must be positive)
      * @return list of all customer's reservations with full details
      */
+    @Operation(
+        summary = "Get customer reservations",
+        description = "Retrieves all reservations for a specific customer (all states: RESERVED, PAID, CANCELED)"
+    )
+    @ApiResponses(
+        ApiResponse(
+            responseCode = "200",
+            description = "List of customer reservations",
+            content = [Content(schema = Schema(implementation = ReservationDetailsDTO::class))]
+        )
+    )
     @Get("/customer/{customerId}")
     suspend fun getCustomerReservations(
-        @Positive(message = "Customer ID must be positive") @PathVariable customerId: Long
+        @Parameter(description = "Customer ID", required = true, example = "1")
+        @Positive(message = "Customer ID must be positive")
+        @PathVariable customerId: Long
     ) = reservationService.getReservationsByCustomerId(customerId)
 }
