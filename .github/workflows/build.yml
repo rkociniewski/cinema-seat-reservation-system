@@ -45,4 +45,4 @@ jobs:
         with:
           files: build/reports/jacoco/test/jacocoTestReport.xml
           token: ${{ secrets.CODECOV_TOKEN }}
-          slug: rkociniewski/csrs
+          slug: rkociniewski/cinema-seat-reservation-system
