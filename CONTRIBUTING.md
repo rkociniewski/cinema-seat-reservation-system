@@ -179,23 +179,28 @@ git rebase develop
 
 ```markdown
 ## Description
+
 Brief description of changes
 
 ## Type of Change
+
 - [ ] Bug fix
 - [ ] New feature
 - [ ] Breaking change
 - [ ] Documentation update
 
 ## Testing
+
 - [ ] Unit tests pass
 - [ ] UI tests pass
 - [ ] Manual testing done
 
 ## Screenshots (if UI changes)
+
 [Add screenshots]
 
 ## Checklist
+
 - [ ] Code follows style guidelines
 - [ ] Self-reviewed code
 - [ ] Commented complex code
@@ -401,6 +406,7 @@ val API_KEY = BuildConfig.API_KEY
 Clear description of the bug
 
 **To Reproduce**
+
 1. Go to '...'
 2. Click on '...'
 3. See error
@@ -412,6 +418,7 @@ What should happen
 If applicable
 
 **Device Info:**
+
 - Device: [e.g. Pixel 6]
 - Android: [e.g. 13]
 - App Version: [e.g. 1.0.0]

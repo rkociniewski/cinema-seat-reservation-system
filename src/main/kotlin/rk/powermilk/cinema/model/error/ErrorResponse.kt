@@ -1,4 +1,4 @@
-package rk.powermilk.cinema.model
+package rk.powermilk.cinema.model.error
 
 import io.micronaut.serde.annotation.Serdeable
 

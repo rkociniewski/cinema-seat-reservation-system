@@ -8,7 +8,7 @@ import io.micronaut.http.annotation.Produces
 import io.micronaut.http.server.exceptions.ExceptionHandler
 import jakarta.inject.Singleton
 import org.slf4j.LoggerFactory
-import rk.powermilk.cinema.model.ErrorResponse
+import rk.powermilk.cinema.model.error.ErrorResponse
 
 @Produces
 @Singleton
