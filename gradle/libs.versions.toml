@@ -5,6 +5,7 @@ test-logger = "4.0.0"
 junit = "6.0.0"
 flyway = "11.13.2"
 kotlin = "2.2.20"
+kotlinx = "1.10.2"
 shadow = "8.3.7"
 ksp = "2.2.20-2.0.3"
 micronautPlugin = "4.5.5"
@@ -13,6 +14,7 @@ testcontainers = "1.21.3"
 
 [libraries]
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
+kotlinx = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx" }
 junit-params = { module = "org.junit.jupiter:junit-jupiter-params", version.ref = "junit" }
 junit-jupiter = { module = "org.junit:junit-bom", version.ref = "junit" }
 flyway = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }

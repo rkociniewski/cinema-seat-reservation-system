@@ -38,7 +38,7 @@ CREATE TABLE screening (
 CREATE TABLE reservation (
     id BIGSERIAL PRIMARY KEY,
     screening_id BIGINT NOT NULL REFERENCES screening(id),
-    customer_id BIGINT NOT NULL REFERENCES customer(id);
+    customer_id BIGINT NOT NULL REFERENCES customer(id),
     created_at TIMESTAMP NOT NULL,
     state VARCHAR(20) NOT NULL
 );
