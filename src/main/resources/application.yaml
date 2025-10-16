@@ -1,5 +1,52 @@
-#Wed Apr 30 19:31:26 CEST 2025
-micronaut.application.name: csrs
+micronaut:
+  application:
+    name: csrs
+  task:
+    enabled: true
+  metrics:
+    enabled: true
+    export:
+      prometheus:
+        enabled: true
+        step: PT1M  # scrape interval
+        descriptions: true
+    binders:
+      jvm:
+        enabled: true  # JVM memory, threads, GC
+      web:
+        enabled: true  # HTTP request metrics
+      logback:
+        enabled: true  # Logging metrics
+      uptime:
+        enabled: true  # Application uptime
+      processor:
+        enabled: true  # CPU metrics
+      files:
+        enabled: true  # File descriptor metrics
+      hikaricp:
+        enabled: true  # Database connection pool metrics
+
+endpoints:
+  prometheus:
+    enabled: true
+    sensitive: false  # Set to true in production with authentication
+  health:
+    enabled: true
+    sensitive: false
+    details-visible: ANONYMOUS  # Show health details
+  metrics:
+    enabled: true
+    sensitive: false
+
+datasources:
+  default:
+    url: jdbc:postgresql://localhost:5432/cinema
+    username: cinema
+    password: cinema
+    driverClassName: org.postgresql.Driver
+    metrics:
+      enabled: true  # Enable datasource metrics
+
 flyway:
   datasources:
     default:
@@ -8,3 +55,7 @@ flyway:
 csrs:
   reservation:
     timeout-minutes: 15
+
+logger:
+  levels:
+    rk.powermilk.cinema: DEBUG

@@ -13,7 +13,7 @@ group = "rk.powermilk"
 /**
  * project version
  */
-version = "1.3.1"
+version = "1.3.2"
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_21
 val jvmTargetVersion = JvmTarget.JVM_21.target
@@ -54,6 +54,8 @@ dependencies {
     implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.data:micronaut-data-jdbc")
     implementation("io.micronaut.flyway:micronaut-flyway")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
     implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     implementation("io.micronaut.data:micronaut-data-tx")
     implementation("io.micronaut.data:micronaut-data-tx-hibernate")
@@ -70,6 +72,7 @@ dependencies {
     runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly(libs.flyway.postgres)
     runtimeOnly("org.postgresql:postgresql")
+    runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("org.yaml:snakeyaml")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
 
