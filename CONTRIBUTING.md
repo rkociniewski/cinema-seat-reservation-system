@@ -246,7 +246,7 @@ class PrayerViewModel @Inject constructor(
 }
 
 // ❌ Bad
-class PrayerViewModel @Inject constructor(private val repository: PrayerRepository): ViewModel() {
+class PrayerViewModel @Inject constructor(private val repository: PrayerRepository) : ViewModel() {
     var uiState = MutableStateFlow(PrayerUiState())
     fun loadPrayer(type: PrayerType) {
         viewModelScope.launch {
@@ -327,15 +327,15 @@ class RosaryViewModel @Inject constructor(
 ```kotlin
 @Test
 fun `navigateNext should move to next bead with prayer`() = runTest {
-    // Given
-    val viewModel = RosaryViewModel(fakeRepository, fakeSettings)
+        // Given
+        val viewModel = RosaryViewModel(fakeRepository, fakeSettings)
 
-    // When
-    viewModel.navigateNext()
+        // When
+        viewModel.navigateNext()
 
-    // Then
-    assertEquals(1, viewModel.uiState.value.currentIndex)
-}
+        // Then
+        assertEquals(1, viewModel.uiState.value.currentIndex)
+    }
 ```
 
 ### UI Tests
