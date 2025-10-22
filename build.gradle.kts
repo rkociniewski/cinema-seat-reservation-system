@@ -1,5 +1,3 @@
-@file:Suppress("UnstableApiUsage")
-
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
 import io.micronaut.gradle.docker.NativeImageDockerfile
@@ -14,7 +12,7 @@ group = "rk.powermilk"
 /**
  * project version
  */
-version = "1.3.5"
+version = "1.3.6"
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_21
 val jvmTargetVersion = JvmTarget.JVM_21.target
@@ -56,6 +54,7 @@ dependencies {
 
     detektPlugins(libs.detekt)
 
+    implementation ("ch.qos.logback:logback-classic")
     implementation("io.micronaut.data:micronaut-data-jdbc")
     implementation("io.micronaut.data:micronaut-data-tx")
     implementation("io.micronaut.data:micronaut-data-tx-hibernate")
@@ -75,7 +74,6 @@ dependencies {
 
     compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
 
-    runtimeOnly("ch.qos.logback:logback-classic")
     runtimeOnly(libs.flyway.postgres)
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
@@ -175,13 +173,14 @@ micronaut {
         optimizeClassLoading = true
         deduceEnvironment = true
         optimizeNetty = true
-        replaceLogbackXml = true
+        replaceLogbackXml = false
     }
 }
 
 tasks.test {
     jvmArgs("-XX:+EnableDynamicAgentLoading")
     useJUnitPlatform()
+    failOnNoDiscoveredTests = false
     finalizedBy(tasks.jacocoTestReport)
 }
 

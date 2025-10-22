@@ -8,7 +8,9 @@ import jakarta.validation.constraints.NotBlank
 
 @MappedEntity
 data class Customer(
-    @GeneratedValue @param:Id val id: Long,
+    @field:Id
+    @field:GeneratedValue
+    val id: Long = 0,
     val email: @NonNull @NotBlank String,
     val name: @NonNull @NotBlank String,
 )

@@ -6,6 +6,7 @@ import kotlinx.coroutines.runBlocking
 import org.slf4j.LoggerFactory
 import rk.powermilk.cinema.service.ReservationService
 
+@Suppress("TooGenericExceptionCaught")
 @Singleton
 class ReservationExpirationTask(
     private val reservationService: ReservationService

@@ -7,6 +7,11 @@ import io.micronaut.data.annotation.MappedEntity
 
 @MappedEntity
 data class Hall(
-    @GeneratedValue @param:Id val id: Long,
+    @field:Id
+    @field:GeneratedValue
+    val id: Long = 0,
     val name: @NonNull String,
 )
+
+
+

@@ -5,6 +5,5 @@ import jakarta.validation.constraints.Min
 
 @ConfigurationProperties("csrs.reservation")
 class ReservationConfig {
-    @JvmField
     var timeoutMinutes: @Min(1) Int = 0
 }

@@ -109,7 +109,7 @@ class MetricsController(
             totalSeats,
             totalReservedSeats,
             if (totalSeats > 0) {
-                (totalReservedSeats.toDouble() / totalSeats) * Numbers.HUNDRED
+                (totalReservedSeats.toDouble() / totalSeats) * Numbers.ONE_HUNDRED
             } else 0.0
         )
     }

@@ -23,6 +23,7 @@ import rk.powermilk.cinema.repository.SeatRepository
 import java.time.Duration
 import java.time.LocalDateTime
 
+@Suppress("LongParameterList")
 @Singleton
 class ReservationService(
     private val reservationRepository: ReservationRepository,
@@ -94,14 +95,7 @@ class ReservationService(
                         val seat = seatRepository.findById(seatId)
                             .orElseThrow { NoSuchElementException("Seat not found: $seatId") }
 
-                        reservedSeatRepository.save(
-                            ReservedSeat(
-                                id = 0L, // will be generated
-                                seat = seat,
-                                reservation = reservation,
-                                ticketType = ticketType
-                            )
-                        )
+                        reservedSeatRepository.save(ReservedSeat(0L, seat, reservation, ticketType))
 
                         // Update ticket type distribution metric
                         metricsService.updateTicketTypeDistribution(ticketType, 1)
@@ -135,8 +129,9 @@ class ReservationService(
         val reservation = reservationRepository.findById(reservationId)
             .orElseThrow { NoSuchElementException("Reservation not found: $reservationId") }
 
+
         if (reservation.state == ReservationState.PAID) {
-            throw IllegalStateException("Cannot cancel a paid reservation.")
+            error("Cannot cancel a paid reservation.")
         }
 
         if (reservation.state == ReservationState.CANCELED) {
@@ -173,7 +168,7 @@ class ReservationService(
         }
 
         if (reservation.state == ReservationState.CANCELED) {
-            throw IllegalStateException("Cannot confirm payment for cancelled reservation.")
+            error("Cannot confirm payment for cancelled reservation.")
         }
 
         val elapsedTime = Duration.between(reservation.createdAt, LocalDateTime.now())
@@ -259,7 +254,7 @@ class ReservationService(
         logger.info("Successfully cancelled {} expired reservations", expiredReservations.size)
     }
 
-    suspend fun getReservationsByCustomerId(customerId: Long): List<rk.powermilk.cinema.dto.ReservationDetailsDTO> =
+    suspend fun getReservationsByCustomerId(customerId: Long): List<ReservationDetailsDTO> =
         withContext(Dispatchers.IO) {
             val reservations = reservationRepository.findByCustomerId(customerId)
 
@@ -273,7 +268,7 @@ class ReservationService(
             }
         }
 
-    suspend fun getReservationDetails(reservationId: Long): rk.powermilk.cinema.dto.ReservationDetailsDTO =
+    suspend fun getReservationDetails(reservationId: Long): ReservationDetailsDTO =
         withContext(Dispatchers.IO) {
             val reservation = reservationRepository.findById(reservationId)
                 .orElseThrow { NoSuchElementException("Reservation not found: $reservationId") }

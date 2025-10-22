@@ -18,7 +18,7 @@ import org.testcontainers.junit.jupiter.Testcontainers
 )
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-object DatabaseTestBase {
+class DatabaseTestBase {
     @Container
     private val postgresContainer = PostgreSQLContainer("postgres:16-alpine").apply {
         withDatabaseName("testdb")
@@ -27,10 +27,12 @@ object DatabaseTestBase {
         withReuse(true)
     }
 
-    fun start() {
-        postgresContainer.start()
+    fun dbStart() {
         System.setProperty("TEST_DB_URL", postgresContainer.jdbcUrl)
         System.setProperty("TEST_DB_USERNAME", postgresContainer.username)
         System.setProperty("TEST_DB_PASSWORD", postgresContainer.password)
+        postgresContainer.start()
     }
+
+    fun dbStop() = postgresContainer.stop()
 }

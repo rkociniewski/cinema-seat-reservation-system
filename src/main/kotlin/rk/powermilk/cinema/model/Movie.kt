@@ -8,7 +8,9 @@ import jakarta.validation.constraints.NotBlank
 
 @MappedEntity
 data class Movie(
-    @GeneratedValue @param:Id val id: Long,
+    @field:Id
+    @field:GeneratedValue
+    val id: Long = 0,
     val title: @NonNull @NotBlank String,
     val durationInMinutes: @NonNull Int,
 )

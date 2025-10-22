@@ -5,12 +5,21 @@ import io.micronaut.data.annotation.GeneratedValue
 import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
 import io.micronaut.data.annotation.Relation
+import jakarta.persistence.Column
 import rk.powermilk.cinema.enums.TicketType
 
 @MappedEntity("reserved_seat")
 data class ReservedSeat(
-    @GeneratedValue @param:Id val id: Long,
-    @Relation(Relation.Kind.MANY_TO_ONE) val seat: @NonNull Seat,
-    @Relation(Relation.Kind.MANY_TO_ONE) val reservation: @NonNull Reservation,
+    @field:Id
+    @field:GeneratedValue
+    val id: Long = 0,
+
+    @field:Column("seat_id")
+    @field:Relation(Relation.Kind.MANY_TO_ONE, cascade = [Relation.Cascade.PERSIST])
+    val seat: @NonNull Seat,
+
+    @field:Column("reservation_id")
+    @field:Relation(Relation.Kind.MANY_TO_ONE, cascade = [Relation.Cascade.PERSIST])
+    val reservation: @NonNull Reservation,
     val ticketType: @NonNull TicketType,
 )

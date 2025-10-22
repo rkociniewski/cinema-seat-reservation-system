@@ -5,14 +5,27 @@ import io.micronaut.data.annotation.GeneratedValue
 import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
 import io.micronaut.data.annotation.Relation
+import jakarta.persistence.Column
 import rk.powermilk.cinema.enums.ReservationState
 import java.time.LocalDateTime
 
 @MappedEntity
 data class Reservation(
-    @GeneratedValue @param:Id val id: Long,
-    @Relation(Relation.Kind.MANY_TO_ONE) val screening: @NonNull Screening,
+    @field:Id
+    @field:GeneratedValue
+    val id: Long = 0,
+
+    @field:Relation(Relation.Kind.MANY_TO_ONE, cascade = [Relation.Cascade.PERSIST])
+    @field:Column("screening_id")
+    val screening: @NonNull Screening,
+
+    @field:Column("created_at")
     val createdAt: @NonNull LocalDateTime,
+
     val state: @NonNull ReservationState,
-    @Relation(Relation.Kind.MANY_TO_ONE) val customer: @NonNull Customer,
+
+    @field:Relation(Relation.Kind.MANY_TO_ONE, cascade = [Relation.Cascade.PERSIST])
+    @field:Column("customer_id")
+    val customer: @NonNull Customer,
 )
+

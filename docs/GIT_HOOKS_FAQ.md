@@ -175,10 +175,8 @@ git commit --no-verify -m "test: Add test constants"
 # 1. local.properties (gitignored)
 API_KEY=your_actual_key_here
 DB_PASSWORD=your_password
-
 # 2. Environment variables
-export API_KEY="your_key"
-
+export=API_KEY="your_key"
 # 3. CI/CD Secrets (GitHub/GitLab)
 # Settings → Secrets → Actions
 ```

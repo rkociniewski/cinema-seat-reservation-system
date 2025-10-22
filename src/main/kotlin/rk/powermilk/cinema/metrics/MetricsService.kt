@@ -4,6 +4,7 @@ import io.micrometer.core.instrument.Counter
 import io.micrometer.core.instrument.MeterRegistry
 import io.micrometer.core.instrument.Timer
 import jakarta.inject.Singleton
+import rk.powermilk.cinema.constant.Numbers
 import rk.powermilk.cinema.enums.ReservationState
 import rk.powermilk.cinema.enums.TicketType
 import java.util.concurrent.ConcurrentHashMap
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap
  * seat availability, payment success rates, and operation timings.
  * All metrics are exposed via the /prometheus endpoint.
  */
+@Suppress("TooManyFunctions")
 @Singleton
 class MetricsService(private val meterRegistry: MeterRegistry) {
 
@@ -147,7 +149,7 @@ class MetricsService(private val meterRegistry: MeterRegistry) {
         seatAvailabilityCheckTimer.record(durationMillis, java.util.concurrent.TimeUnit.MILLISECONDS)
 
         val occupancyRate = if (totalCount > 0) {
-            ((totalCount - availableCount).toDouble() / totalCount) * 100
+            ((totalCount - availableCount).toDouble() / totalCount) * Numbers.ONE_HUNDRED
         } else 0.0
 
         meterRegistry.gauge(

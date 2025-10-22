@@ -5,12 +5,24 @@ import io.micronaut.data.annotation.GeneratedValue
 import io.micronaut.data.annotation.Id
 import io.micronaut.data.annotation.MappedEntity
 import io.micronaut.data.annotation.Relation
+import jakarta.persistence.Column
 import java.time.LocalDateTime
 
 @MappedEntity
 data class Screening(
-    @GeneratedValue @param:Id val id: Long,
-    @Relation(Relation.Kind.MANY_TO_ONE) val movie: Movie?,
-    @Relation(Relation.Kind.MANY_TO_ONE) val hall: Hall?,
+    @field:Id
+    @field:GeneratedValue
+    val id: Long = 0,
+
+    @field:Relation(Relation.Kind.MANY_TO_ONE, cascade = [Relation.Cascade.PERSIST])
+    @field:Column("movie_id")
+    val movie: Movie?,
+
+    @field:Relation(Relation.Kind.MANY_TO_ONE, cascade = [Relation.Cascade.PERSIST])
+    @field:Column("hall_id")
+    val hall: Hall?,
+
+    @field:Column("start_time")
     val startTime: @NonNull LocalDateTime,
 )
+

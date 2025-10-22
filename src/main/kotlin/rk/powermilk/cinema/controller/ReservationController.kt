@@ -17,7 +17,6 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Positive
 import rk.powermilk.cinema.dto.CreateReservationDTO
-import rk.powermilk.cinema.dto.PaymentConfirmationDTO
 import rk.powermilk.cinema.dto.ReservationDetailsDTO
 import rk.powermilk.cinema.model.error.ErrorResponse
 import rk.powermilk.cinema.model.error.ValidationErrorResponse
@@ -52,23 +51,23 @@ class ReservationController(private val reservationService: ReservationService) 
     )
     @ApiResponses(
         ApiResponse(
-            responseCode = "201",
-            description = "Reservation created successfully",
+            "Reservation created successfully",
+            "201",
             content = [Content(schema = Schema(implementation = ReservationDetailsDTO::class))]
         ),
         ApiResponse(
-            responseCode = "400",
-            description = "Invalid request data",
+            "Invalid request data",
+            "400",
             content = [Content(schema = Schema(implementation = ValidationErrorResponse::class))]
         ),
         ApiResponse(
-            responseCode = "404",
-            description = "Customer or screening not found",
+            "Customer or screening not found",
+            "404",
             content = [Content(schema = Schema(implementation = ErrorResponse::class))]
         ),
         ApiResponse(
-            responseCode = "409",
-            description = "One or more seats already taken",
+            "One or more seats already taken",
+            "409",
             content = [Content(schema = Schema(implementation = ErrorResponse::class))]
         )
     )
@@ -81,11 +80,7 @@ class ReservationController(private val reservationService: ReservationService) 
         )
         @Valid @Body request: CreateReservationDTO
     ): HttpResponse<ReservationDetailsDTO> {
-        val reservation = reservationService.createReservation(
-            customerId = request.customerId,
-            screeningId = request.screeningId,
-            seatIdToTicketType = request.seats
-        )
+        val reservation = reservationService.createReservation(request.customerId, request.screeningId, request.seats)
 
         return HttpResponse.created(ReservationDetailsDTO.from(reservation))
     }
@@ -161,11 +156,6 @@ class ReservationController(private val reservationService: ReservationService) 
         @Parameter(description = "Reservation ID", required = true, example = "1")
         @Positive(message = "Reservation ID must be positive")
         @PathVariable id: Long,
-        @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            description = "Payment details (optional)",
-            required = false
-        )
-        @Valid @Body payment: PaymentConfirmationDTO
     ): HttpResponse<ReservationDetailsDTO> {
         reservationService.confirmPayment(id)
         val updated = reservationService.getReservationDetails(id)

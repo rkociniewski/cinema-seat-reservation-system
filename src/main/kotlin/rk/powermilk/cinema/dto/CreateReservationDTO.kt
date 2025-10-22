@@ -7,6 +7,7 @@ import jakarta.validation.constraints.NotEmpty
 import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Positive
 import jakarta.validation.constraints.Size
+import rk.powermilk.cinema.constant.Numbers
 import rk.powermilk.cinema.enums.TicketType
 
 @Serdeable
@@ -62,6 +63,8 @@ data class CreateReservationDTO(
 ) {
     init {
         require(seats.isNotEmpty()) { "At least one seat must be selected" }
-        require(seats.size <= 20) { "Cannot reserve more than 20 seats in one reservation" }
+        require(seats.size <= Numbers.SEAT_LIMIT) {
+            "Cannot reserve more than ${Numbers.SEAT_LIMIT} seats in one reservation"
+        }
     }
 }
