@@ -2,7 +2,8 @@ name: Sync Labels
 
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    -
+      cron: '0 12 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -12,11 +13,13 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      -
+        uses: actions/checkout@v5
         with:
           sparse-checkout: .github/labels.yml
 
-      - name: Sync labels
+      -
+        name: Sync labels
         uses: EndBug/label-sync@v2
         with:
           config-file: .github/labels.yml

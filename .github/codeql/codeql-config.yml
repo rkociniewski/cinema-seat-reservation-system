@@ -5,8 +5,10 @@ name: "CodeQL Config for Android"
 
 # Query suites to run
 queries:
-  - uses: default
-  - uses: security-and-quality
+  -
+    uses: default
+  -
+    uses: security-and-quality
 
 # Paths to exclude from analysis
 paths-ignore:
@@ -33,12 +35,15 @@ paths:
 # Query filters - exclude low-priority queries
 query-filters:
   # Exclude informational findings
-  - exclude:
+  -
+    exclude:
       problem.severity: recommendation
   # Exclude specific Android queries that may timeout
-  - exclude:
+  -
+    exclude:
       id: java/android/implicit-pendingintent
-  - exclude:
+  -
+    exclude:
       id: java/android/unsafe-android-webview-fetch
 
 # Additional configuration for Android

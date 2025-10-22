@@ -2,8 +2,8 @@ name: CodeQL Security Report
 
 on:
   schedule:
-    # Generate weekly report every Monday at 9 AM
-    - cron: '0 9 * * 1'
+    -
+      cron: '0 12 * * 1'
   workflow_dispatch:
 
 permissions:
@@ -16,10 +16,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      -
+        name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Get CodeQL alerts
+      -
+        name: Get CodeQL alerts
         id: get-alerts
         uses: actions/github-script@v8
         with:
@@ -52,7 +54,8 @@ jobs:
             core.setOutput('summary', JSON.stringify(summary));
             return summary;
 
-      - name: Create or update security issue
+      -
+        name: Create or update security issue
         uses: actions/github-script@v8
         with:
           script: |
@@ -161,7 +164,8 @@ jobs:
               });
             }
 
-      - name: Notify team (optional)
+      -
+        name: Notify team (optional)
         if: steps.get-alerts.outputs.summary.critical > 0
         uses: actions/github-script@v8
         with:

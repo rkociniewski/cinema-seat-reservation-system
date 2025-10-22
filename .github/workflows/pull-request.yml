@@ -31,14 +31,16 @@ jobs:
 
   pr-validation:
     runs-on: ubuntu-latest
-    continue-on-error: true  # Nie blokuj PR przy błędzie walidacji
+    continue-on-error: true
     steps:
-      - name: Checkout code
+      -
+        name: Checkout code
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
-      - name: Validate PR title (optional)
+      -
+        name: Validate PR title (optional)
         continue-on-error: true
         uses: amannn/action-semantic-pull-request@v6
         env:
@@ -65,7 +67,8 @@ jobs:
           ignoreLabels: |
             skip-changelog
 
-      - name: Check for merge conflicts
+      -
+        name: Check for merge conflicts
         run: |
           git fetch origin ${{ github.event.pull_request.base.ref }}
           if ! git merge-tree $(git merge-base HEAD origin/${{ github.event.pull_request.base.ref }}) HEAD origin/${{ github.event.pull_request.base.ref }} | grep -q "^<<<<<< "; then
@@ -81,7 +84,8 @@ jobs:
     if: github.event.action == 'opened'
 
     steps:
-      - name: Comment PR based on target branch
+      -
+        name: Comment PR based on target branch
         uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
@@ -143,7 +147,8 @@ jobs:
     if: github.event.action == 'opened' || github.event.action == 'synchronize'
 
     steps:
-      - name: Add size label
+      -
+        name: Add size label
         uses: actions/github-script@v8
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}

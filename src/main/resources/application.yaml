@@ -23,9 +23,11 @@ openapi:
     name: MIT License
     url: https://opensource.org/licenses/MIT
   servers:
-    - url: http://localhost:8080
+    -
+      url: http://localhost:8080
       description: Development server
-    - url: https://api.cinema.example.com
+    -
+      url: https://api.cinema.example.com
       description: Production server
 
 micronaut:

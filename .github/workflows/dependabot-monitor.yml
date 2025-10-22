@@ -2,7 +2,8 @@ name: Dependabot Monitor
 
 on:
   schedule:
-    - cron: '0 0 * * 0'
+    -
+      cron: '0 12 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -13,7 +14,8 @@ jobs:
       issues: write
 
     steps:
-      - name: Check for stale Dependabot PRs
+      -
+        name: Check for stale Dependabot PRs
         uses: actions/github-script@v8
         with:
           script: |
@@ -103,10 +105,12 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout
+      -
+        name: Checkout
         uses: actions/checkout@v5
 
-      - name: Generate Dependabot statistics
+      -
+        name: Generate Dependabot statistics
         uses: actions/github-script@v8
         with:
           script: |

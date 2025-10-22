@@ -6,7 +6,6 @@ profile:
 
 projectJDK: "21" #(Applied in CI/CD pipeline)
 
-
 failureConditions:
   severityThresholds:
     any: 15

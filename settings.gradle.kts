@@ -1,4 +1,4 @@
-rootProject.name = "csrs"
+rootProject.name = "cinema-seat-reservation-system"
 
 pluginManagement {
     repositories {

@@ -23,10 +23,12 @@ jobs:
   verify-version:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      -
+        name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Extract and verify version
+      -
+        name: Extract and verify version
         run: |
           BRANCH_NAME="${{ github.ref_name }}"
           EXPECTED_VERSION="${BRANCH_NAME#release/}"
