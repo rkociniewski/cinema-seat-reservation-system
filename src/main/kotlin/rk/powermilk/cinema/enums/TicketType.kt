@@ -1,7 +1,8 @@
 package rk.powermilk.cinema.enums
+
 import io.swagger.v3.oas.annotations.media.Schema
 
-@param:Schema(
+@Schema(
     description = """
         Type of ticket with associated pricing tier.
 
@@ -16,7 +17,7 @@ import io.swagger.v3.oas.annotations.media.Schema
     example = "STANDARD"
 )
 enum class TicketType {
-    @param:Schema(
+    @Schema(
         description = """
             Discounted ticket for children.
 
@@ -28,7 +29,7 @@ enum class TicketType {
     )
     CHILD_DISCOUNT,
 
-    @param:Schema(
+    @Schema(
         description = """
             Discounted ticket for senior citizens.
 
@@ -40,7 +41,7 @@ enum class TicketType {
     )
     SENIOR_DISCOUNT,
 
-    @param:Schema(
+    @Schema(
         description = """
             Regular price ticket for adults.
 

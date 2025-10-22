@@ -2,6 +2,7 @@
 
 import io.gitlab.arturbosch.detekt.Detekt
 import io.gitlab.arturbosch.detekt.DetektCreateBaselineTask
+import io.micronaut.gradle.docker.NativeImageDockerfile
 import org.jetbrains.dokka.gradle.engine.parameters.VisibilityModifier
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -13,23 +14,26 @@ group = "rk.powermilk"
 /**
  * project version
  */
-version = "1.3.3"
+version = "1.3.4"
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_21
 val jvmTargetVersion = JvmTarget.JVM_21.target
 
 plugins {
-    alias(libs.plugins.flyway)
-    alias(libs.plugins.kotlin.ksp)
-    alias(libs.plugins.shadow)
-    alias(libs.plugins.micronaut.application)
-    alias(libs.plugins.micronaut.aot)
-    alias(libs.plugins.kotlin.jvm)
-    alias(libs.plugins.test.logger)
-    alias(libs.plugins.dokka)
     alias(libs.plugins.detekt)
-    jacoco
+    alias(libs.plugins.dokka)
+    alias(libs.plugins.flyway)
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlin.open)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.jpa)
+    alias(libs.plugins.micronaut.aot)
+    alias(libs.plugins.micronaut.application)
+    alias(libs.plugins.micronaut.library)
+    alias(libs.plugins.shadow)
+    alias(libs.plugins.test.logger)
     application
+    jacoco
 }
 
 repositories {
@@ -43,54 +47,74 @@ java {
 
 // dependencies
 dependencies {
-    ksp("io.micronaut.validation:micronaut-validation-processor")
-    ksp("io.micronaut:micronaut-http-validation")
-    ksp("io.micronaut.serde:micronaut-serde-processor")
-    ksp("io.micronaut.openapi:micronaut-openapi")
+    kapt("io.micronaut:micronaut-inject-kotlin")
+    kapt("io.micronaut.data:micronaut-data-processor")
+    kapt("io.micronaut:micronaut-http-validation")
+    kapt("io.micronaut.micrometer:micronaut-micrometer-annotation")
+    kapt("io.micronaut.openapi:micronaut-openapi")
+    kapt("io.micronaut.serde:micronaut-serde-processor")
 
     detektPlugins(libs.detekt)
 
-    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
-    implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.data:micronaut-data-jdbc")
-    implementation("io.micronaut.flyway:micronaut-flyway")
-    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
-    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
-    implementation("io.micronaut.sql:micronaut-hibernate-jpa")
     implementation("io.micronaut.data:micronaut-data-tx")
     implementation("io.micronaut.data:micronaut-data-tx-hibernate")
-    implementation("io.micronaut:micronaut-http-server")
+    implementation("io.micronaut.flyway:micronaut-flyway")
+    implementation("io.micronaut.kotlin:micronaut-kotlin-runtime")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-core")
+    implementation("io.micronaut.micrometer:micronaut-micrometer-registry-prometheus")
+    implementation("io.micronaut.serde:micronaut-serde-jackson")
     implementation("io.micronaut.sql:micronaut-jdbc-hikari")
     implementation("io.micronaut.validation:micronaut-validation")
-    implementation(libs.kotlinx)
+    implementation("io.micronaut:micronaut-http-server")
+    implementation("io.micronaut:micronaut-http-client")
+    implementation("io.micronaut:micronaut-management")
+    implementation("io.micronaut.data:micronaut-data-hibernate-jpa")
     implementation(libs.flyway)
+    implementation(libs.kotlinx)
 
     compileOnly("io.micronaut.openapi:micronaut-openapi-annotations")
-    compileOnly("io.micronaut:micronaut-http-client")
 
     runtimeOnly("ch.qos.logback:logback-classic")
-    runtimeOnly("io.micronaut.sql:micronaut-jdbc-hikari")
     runtimeOnly(libs.flyway.postgres)
     runtimeOnly("org.postgresql:postgresql")
     runtimeOnly("io.micrometer:micrometer-registry-prometheus")
     runtimeOnly("org.yaml:snakeyaml")
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql")
+    runtimeOnly("org.postgresql:postgresql")
 
     testImplementation(libs.junit.params)
     testImplementation(kotlin("test"))
+    testImplementation(platform(libs.junit.jupiter))
+    testImplementation("org.apache.commons:commons-compress:1.27.1")
     testImplementation("io.micronaut:micronaut-http-client")
     testImplementation("io.micronaut.test:micronaut-test-junit5")
-    testImplementation(platform(libs.junit.jupiter))
-    testImplementation("org.junit.jupiter:junit-jupiter")
-    testImplementation(libs.testcontainers)
+    testImplementation("org.testcontainers:junit-jupiter")
+    testImplementation("org.testcontainers:postgresql")
+    testImplementation("org.testcontainers:testcontainers")
 
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
     testRuntimeOnly(libs.postgres)
 }
 
 application {
-    mainClass = "rk.cinema.Application"
+    mainClass = "rk.powermilk.cinema.Application"
 }
+
+allOpen {
+    annotations(
+        "jakarta.inject.Singleton",
+        "jakarta.transaction.Transactional",
+        "io.micronaut.context.annotation.Factory",
+        "io.micronaut.http.annotation.Controller",
+        "io.micronaut.http.annotation.Filter",
+        "io.micronaut.aop.Around",
+        "io.micronaut.validation.Validated"
+    )
+    preset("micronaut")
+}
+
 
 testlogger {
     showStackTraces = false
@@ -133,6 +157,25 @@ dokka {
                 )
             }
         }
+    }
+}
+
+micronaut {
+    runtime("netty")
+    testRuntime("junit5")
+    processing {
+        incremental(true)
+        annotations("rk.powermilk.*")
+    }
+    aot {
+        optimizeServiceLoading = false
+        convertYamlToJava = false
+        precomputeOperations = true
+        cacheEnvironment = true
+        optimizeClassLoading = true
+        deduceEnvironment = true
+        optimizeNetty = true
+        replaceLogbackXml = true
     }
 }
 
@@ -192,4 +235,8 @@ tasks.withType<Detekt>().configureEach {
 
 tasks.withType<DetektCreateBaselineTask>().configureEach {
     jvmTarget = jvmTargetVersion
+}
+
+tasks.named<NativeImageDockerfile>("dockerfileNative") {
+    jdkVersion = "21"
 }

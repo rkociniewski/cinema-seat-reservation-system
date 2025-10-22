@@ -7,10 +7,8 @@ flyway = "11.13.2"
 kotlin = "2.2.20"
 kotlinx = "1.10.2"
 shadow = "8.3.7"
-ksp = "2.2.20-2.0.3"
 micronautPlugin = "4.5.5"
 postgres = "42.7.8"
-testcontainers = "1.21.3"
 
 [libraries]
 detekt = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
@@ -20,7 +18,6 @@ junit-jupiter = { module = "org.junit:junit-bom", version.ref = "junit" }
 flyway = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
-testcontainers = { module = "org.testcontainers:postgresql", version.ref = "testcontainers" }
 
 [libraries.test-junit5]
 module = "org.jetbrains.kotlin:kotlin-test-junit5"
@@ -29,10 +26,13 @@ version.ref = "kotlin"
 [plugins]
 test-logger = { id = "com.adarshr.test-logger", version.ref = "test-logger" }
 micronaut-application = { id = "io.micronaut.application", version.ref = "micronautPlugin" }
+micronaut-library = { id = "io.micronaut.library", version.ref = "micronautPlugin" }
 micronaut-aot = { id = "io.micronaut.aot", version.ref = "micronautPlugin" }
 flyway = { id = "org.flywaydb.flyway", version.ref = "flyway" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-open = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+kotlin-jpa = { id = "org.jetbrains.kotlin.plugin.jpa", version.ref = "kotlin" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 shadow = { id = "com.gradleup.shadow", version.ref = "shadow" }
-kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }

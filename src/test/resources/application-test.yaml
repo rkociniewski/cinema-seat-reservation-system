@@ -1,0 +1,30 @@
+micronaut:
+  application:
+    name: csrs-test
+  task:
+    enabled: false  # Disable scheduled tasks in tests
+
+datasources:
+  default:
+    url: ${TEST_DB_URL:jdbc:postgresql://localhost:5432/testdb}
+    username: ${TEST_DB_USERNAME:test}
+    password: ${TEST_DB_PASSWORD:test}
+    driverClassName: org.postgresql.Driver
+    schema-generate: NONE
+    dialect: POSTGRES
+
+flyway:
+  datasources:
+    default:
+      enabled: true
+      clean-schema: true
+
+csrs:
+  reservation:
+    timeout-minutes: 15
+
+logger:
+  levels:
+    rk.powermilk.cinema: DEBUG
+    org.testcontainers: INFO
+    com.github.dockerjava: WARN
