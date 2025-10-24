@@ -12,7 +12,7 @@ group = "rk.powermilk"
 /**
  * project version
  */
-version = "1.3.6"
+version = "1.3.7"
 
 val javaVersion: JavaVersion = JavaVersion.VERSION_21
 val jvmTargetVersion = JvmTarget.JVM_21.target
@@ -21,10 +21,10 @@ plugins {
     alias(libs.plugins.detekt)
     alias(libs.plugins.dokka)
     alias(libs.plugins.flyway)
+    alias(libs.plugins.kotlin.jpa)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlin.open)
     alias(libs.plugins.kotlin.kapt)
-    alias(libs.plugins.kotlin.jpa)
     alias(libs.plugins.micronaut.aot)
     alias(libs.plugins.micronaut.application)
     alias(libs.plugins.micronaut.library)
@@ -54,7 +54,7 @@ dependencies {
 
     detektPlugins(libs.detekt)
 
-    implementation ("ch.qos.logback:logback-classic")
+    implementation("ch.qos.logback:logback-classic")
     implementation("io.micronaut.data:micronaut-data-jdbc")
     implementation("io.micronaut.data:micronaut-data-tx")
     implementation("io.micronaut.data:micronaut-data-tx-hibernate")
@@ -83,7 +83,7 @@ dependencies {
     runtimeOnly("org.postgresql:postgresql")
 
     testImplementation(libs.junit.params)
-    testImplementation(kotlin("test"))
+    testImplementation(libs.test.junit5)
     testImplementation(platform(libs.junit.jupiter))
     testImplementation("org.apache.commons:commons-compress:1.27.1")
     testImplementation("io.micronaut:micronaut-http-client")

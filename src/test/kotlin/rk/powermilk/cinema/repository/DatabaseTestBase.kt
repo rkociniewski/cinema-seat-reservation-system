@@ -1,6 +1,7 @@
 package rk.powermilk.cinema.repository
 
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import io.micronaut.test.support.TestPropertyProvider
 import org.junit.jupiter.api.TestInstance
 import org.testcontainers.containers.PostgreSQLContainer
 import org.testcontainers.junit.jupiter.Container
@@ -18,7 +19,8 @@ import org.testcontainers.junit.jupiter.Testcontainers
 )
 @Testcontainers
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class DatabaseTestBase {
+class DatabaseTestBase : TestPropertyProvider {
+
     @Container
     private val postgresContainer = PostgreSQLContainer("postgres:16-alpine").apply {
         withDatabaseName("testdb")
@@ -28,10 +30,18 @@ class DatabaseTestBase {
     }
 
     fun dbStart() {
-        System.setProperty("TEST_DB_URL", postgresContainer.jdbcUrl)
-        System.setProperty("TEST_DB_USERNAME", postgresContainer.username)
-        System.setProperty("TEST_DB_PASSWORD", postgresContainer.password)
         postgresContainer.start()
+    }
+
+    override fun getProperties(): Map<String, String> {
+        if (!postgresContainer.isRunning) {
+            postgresContainer.start()
+        }
+        return mapOf(
+            "datasources.default.url" to postgresContainer.jdbcUrl,
+            "datasources.default.username" to postgresContainer.username,
+            "datasources.default.password" to postgresContainer.password
+        )
     }
 
     fun dbStop() = postgresContainer.stop()

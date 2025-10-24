@@ -18,10 +18,7 @@ junit-jupiter = { module = "org.junit:junit-bom", version.ref = "junit" }
 flyway = { module = "org.flywaydb:flyway-core", version.ref = "flyway" }
 flyway-postgres = { module = "org.flywaydb:flyway-database-postgresql", version.ref = "flyway" }
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
-
-[libraries.test-junit5]
-module = "org.jetbrains.kotlin:kotlin-test-junit5"
-version.ref = "kotlin"
+test-junit5 = { module = "org.jetbrains.kotlin:kotlin-test-junit5", version.ref = "kotlin" }
 
 [plugins]
 test-logger = { id = "com.adarshr.test-logger", version.ref = "test-logger" }
