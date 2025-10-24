@@ -99,3 +99,8 @@ csrs:
 logger:
   levels:
     rk.powermilk.cinema: DEBUG
+
+jpa:
+  default:
+    entity-scan:
+      packages: 'rk.powermilk.cinema.model'

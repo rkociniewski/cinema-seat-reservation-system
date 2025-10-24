@@ -6,6 +6,7 @@ import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.TestInstance
@@ -39,6 +40,11 @@ class ReservationRepositoryTest : DatabaseTestBase() {
     private lateinit var testCustomer: Customer
     private lateinit var testScreening: Screening
 
+    @BeforeAll
+    fun initialize() {
+        dbStart()
+    }
+
     @BeforeEach
     fun setUp() {
         reservationRepository.deleteAll()
@@ -46,8 +52,6 @@ class ReservationRepositoryTest : DatabaseTestBase() {
         customerRepository.deleteAll()
         movieRepository.deleteAll()
         hallRepository.deleteAll()
-
-        dbStart()
 
         // Create test data
         testCustomer = customerRepository.save(Customer(0, "test@example.com", "Test User"))

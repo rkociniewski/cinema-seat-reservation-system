@@ -1,4 +1,4 @@
-# 📚 Fibonacci
+# 📚 Cinema Seat Reservation System
 
 ## 📖 Table of Contents
 

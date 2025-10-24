@@ -2,7 +2,7 @@ micronaut:
   application:
     name: csrs-test
   task:
-    enabled: false  # Disable scheduled tasks in tests
+    enabled: false
 
 datasources:
   default:
